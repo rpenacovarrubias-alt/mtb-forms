@@ -395,7 +395,8 @@
                     // Error del servidor
                     throw new Error(result.message || 'Error al procesar la solicitud');
                 }
-                
+                alert('Error al procesar la solicitud: ' + error.message);
+                console.error('Error completo:', error);
             } catch (error) {
                 // Mostrar mensaje de error
                 console.error('Error:', error);
