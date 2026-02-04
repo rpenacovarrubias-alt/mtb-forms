@@ -402,25 +402,22 @@ const response = await fetch(webhookUrl, {
                 errorText.textContent = error.message || 'Hubo un problema al conectar con el servidor. Por favor intenta de nuevo.';
                 errorMessage.classList.remove('hidden');
                if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Error en la respuesta del servidor');
+    throw new Error('Error en la respuesta del servidor');
 }
 
 const result = await response.json();
-console.log('Respuesta completa del servidor:', result);
+console.log('Respuesta del servidor:', result);
 
-// Verificar si hay error en la respuesta
-if (result.error === true) {
-    showError(result.message || 'Error al procesar la solicitud');
-    return;
+// Si la respuesta tiene datos, considerarlo como éxito
+if (result && (result.id || result.status)) {
+    hideError();
+    showSuccessMessage();
+    form.reset();
+} else {
+    showError('Error: No se recibió confirmación del servidor');
 }
 
-// Si todo está bien
-hideError();
-showSuccessMessage();
-form.reset();
-
 } catch (error) {
-    console.error('Error completo:', error);
+    console.error('Error:', error);
     showError('Error al procesar la solicitud: ' + error.message);
 }
