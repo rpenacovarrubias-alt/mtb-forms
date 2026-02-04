@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectar Robot MTB - Credenciales XM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#17cf17",
+                        "mtb-blue": "#2D3E50",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Lexend', sans-serif; 
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .btn-premium {
+            transition: all 0.3s ease;
+        }
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #17cf17;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    
+    <!-- Página Principal del Formulario -->
+    <div id="formPage" class="container mx-auto px-4 py-8 max-w-2xl">
+        <!-- Header -->
+        <div class="text-center mb-8 fade-in">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-mtb-blue to-primary rounded-2xl mb-4">
+                <span class="material-symbols-outlined text-white text-4xl">smart_toy</span>
+            </div>
+            <h1 class="text-4xl font-black text-gray-800 mb-2">Conectar Robot MTB</h1>
+            <p class="text-gray-600 text-lg">Proporciona tus credenciales de XM para activar el trading automático</p>
+        </div>
+
+        <!-- Tarjeta del Formulario -->
+        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-10 fade-in">
+            
+            <!-- Información de Seguridad -->
+            <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+                <span class="material-symbols-outlined text-green-600 flex-shrink-0">verified_user</span>
+                <div>
+                    <p class="text-green-800 font-semibold text-sm">🔐 Conexión Segura</p>
+                    <p class="text-green-700 text-xs mt-1">Tus credenciales son encriptadas con AES-256 y almacenadas de forma segura.</p>
+                </div>
+            </div>
+
+            <!-- Formulario -->
+            <form id="credentialsForm" class="space-y-6">
+                
+                <!-- Nombre Completo -->
+                <div>
+                    <label for="nombre" class="block text-sm font-bold text-gray-700 mb-2">
+                        <span class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">person</span>
+                            Nombre Completo
+                        </span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nombre" 
+                        name="nombre" 
+                        required
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                        placeholder="Juan Pérez García"
+                    >
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-bold text-gray-700 mb-2">
+                        <span class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">mail</span>
+                            Email
+                        </span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                        placeholder="tu@email.com"
+                    >
+                </div>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-mtb-blue">account_balance</span>
+                        Credenciales de XM
+                    </h3>
+                </div>
+
+                <!-- Cuenta XM -->
+                <div>
+                    <label for="cuenta-xm" class="block text-sm font-bold text-gray-700 mb-2">
+                        ID de Cuenta XM
+                    </label>
+                    <input 
+                        type="text" 
+                        id="cuenta-xm" 
+                        name="cuenta_xm" 
+                        required
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                        placeholder="123456789"
+                    >
+                    <p class="text-xs text-gray-500 mt-1">Tu número de cuenta de trading en XM</p>
+                </div>
+
+                <!-- Password XM -->
+                <div>
+                    <label for="password-xm" class="block text-sm font-bold text-gray-700 mb-2">
+                        Password de XM
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="password-xm" 
+                            name="xm_password" 
+                            required
+                            minlength="6"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none pr-12"
+                            placeholder="••••••••"
+                        >
+                        <button 
+                            type="button"
+                            onclick="togglePassword()"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                        >
+                            <span class="material-symbols-outlined" id="toggleIcon">visibility</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Password de tu cuenta de trading (mínimo 6 caracteres)</p>
+                </div>
+
+                <!-- Servidor XM -->
+                <div>
+                    <label for="servidor-xm" class="block text-sm font-bold text-gray-700 mb-2">
+                        Servidor de XM
+                    </label>
+                    <select 
+                        id="servidor-xm" 
+                        name="xm_server" 
+                        required
+                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none"
+                    >
+                        <option value="">Selecciona tu servidor</option>
+                        <option value="XMGlobal-Real 1">XMGlobal-Real 1</option>
+                        <option value="XMGlobal-Real 2">XMGlobal-Real 2</option>
+                        <option value="XMGlobal-Real 3">XMGlobal-Real 3</option>
+                        <option value="XMGlobal-Real 4">XMGlobal-Real 4</option>
+                        <option value="XMGlobal-Real 5">XMGlobal-Real 5</option>
+                        <option value="XMGlobal-Real 6">XMGlobal-Real 6</option>
+                        <option value="XMGlobal-Real 7">XMGlobal-Real 7</option>
+                        <option value="XMGlobal-Real 8">XMGlobal-Real 8</option>
+                        <option value="XMGlobal-Real 9">XMGlobal-Real 9</option>
+                        <option value="XMGlobal-Real 10">XMGlobal-Real 10</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">El servidor que aparece en tu MT4/MT5</p>
+                </div>
+
+                <!-- Checkbox de Autorización -->
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input 
+                            type="checkbox" 
+                            id="autorizacion" 
+                            name="autorizacion" 
+                            required
+                            class="mt-1 w-5 h-5 text-primary border-gray-300 rounded focus:ring-2 focus:ring-primary/20"
+                        >
+                        <span class="text-sm text-gray-700">
+                            Autorizo a MexTradeBot a conectar mi cuenta de XM para trading automatizado. 
+                            Entiendo que mis credenciales serán almacenadas de forma encriptada y solo se usarán para operar el robot de trading.
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Mensaje de Loading -->
+                <div id="loadingMessage" class="hidden bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
+                    <div class="loading-spinner"></div>
+                    <p class="text-blue-800 font-semibold">Procesando tu solicitud...</p>
+                </div>
+
+                <!-- Mensaje de Error -->
+                <div id="errorMessage" class="hidden bg-red-50 border border-red-200 rounded-xl p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-red-600 flex-shrink-0">error</span>
+                        <div>
+                            <p class="text-red-800 font-semibold">Error al enviar el formulario</p>
+                            <p class="text-red-700 text-sm mt-1" id="errorText">Error al procesar la solicitud</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button 
+                    type="submit"
+                    class="w-full bg-gradient-to-r from-mtb-blue to-primary text-white font-bold py-4 px-6 rounded-xl btn-premium text-lg shadow-lg flex items-center justify-center gap-2"
+                >
+                    <span class="material-symbols-outlined">rocket_launch</span>
+                    Conectar Robot Ahora
+                </button>
+
+            </form>
+
+            <!-- Ayuda -->
+            <div class="mt-8 pt-6 border-t border-gray-200 text-center">
+                <p class="text-sm text-gray-600">
+                    ¿Tienes problemas? 
+                    <a href="https://wa.me/524421860803" target="_blank" class="text-primary font-semibold hover:underline">
+                        Contáctanos por WhatsApp
+                    </a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Página de Confirmación (oculta inicialmente) -->
+    <div id="successPage" class="hidden container mx-auto px-4 py-8 max-w-2xl">
+        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-10 text-center fade-in">
+            
+            <!-- Icono de Éxito -->
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full mb-6">
+                <span class="material-symbols-outlined text-white text-5xl">check_circle</span>
+            </div>
+
+            <!-- Mensaje de Éxito -->
+            <h1 class="text-4xl font-black text-gray-800 mb-4">¡Registro Completo! 🎉</h1>
+            <p class="text-xl text-gray-600 mb-8">
+                Gracias por proporcionar tus credenciales.<br>
+                Tu robot MTB será conectado en las próximas 24 horas.
+            </p>
+
+            <!-- Información Adicional -->
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8 text-left">
+                <h3 class="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined">info</span>
+                    Próximos Pasos:
+                </h3>
+                <ul class="space-y-2 text-blue-800 text-sm">
+                    <li class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-lg flex-shrink-0">done</span>
+                        <span>Recibirás un email de confirmación en <span id="userEmail" class="font-semibold"></span></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-lg flex-shrink-0">done</span>
+                        <span>Nuestro equipo validará tus credenciales</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-lg flex-shrink-0">done</span>
+                        <span>Conectaremos tu robot automáticamente</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-lg flex-shrink-0">done</span>
+                        <span>Te notificaremos cuando esté activo</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Botón Regresar -->
+            <a 
+                href="../index.html" 
+                class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-mtb-blue to-primary text-white font-bold py-4 px-8 rounded-xl btn-premium text-lg shadow-lg"
+            >
+                <span class="material-symbols-outlined">home</span>
+                Regresar a Página Principal
+            </a>
+
+            <!-- Ayuda Adicional -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <p class="text-sm text-gray-600">
+                    ¿Necesitas ayuda inmediata?
+                </p>
+                <a 
+                    href="https://wa.me/524421860803" 
+                    target="_blank"
+                    class="inline-flex items-center gap-2 text-primary font-semibold hover:underline mt-2"
+                >
+                    <span class="material-symbols-outlined text-lg">chat</span>
+                    Hablar con Soporte
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // ==========================================
+        // CONFIGURACIÓN
+        // ==========================================
+        const N8N_WEBHOOK_URL = 'https://chatbotventas-n8n.h0w0dc.easypanel.host/webhook/connect-robotvr';
+
+        // Toggle para mostrar/ocultar password
+        function togglePassword() {
+            const passwordInput = document.getElementById('password-xm');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = 'visibility_off';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = 'visibility';
+            }
+        }
+
+        // Manejar el envío del formulario
+        document.getElementById('credentialsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Obtener elementos del DOM
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            // Deshabilitar botón y mostrar loading
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+            loadingMessage.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            
+            try {
+                // Recopilar datos del formulario
+                const data = {
+                    nombre: document.getElementById('nombre').value,
+                    correo_electronico: document.getElementById('email').value,
+                    cuenta_xm: document.getElementById('cuenta-xm').value,
+                    xm_password: document.getElementById('password-xm').value,
+                    xm_server: document.getElementById('servidor-xm').value
+                };
+                
+                console.log('Enviando datos:', data);
+                
+                // Enviar a n8n webhook
+                const response = await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                console.log('Respuesta HTTP status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`Error del servidor: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('Respuesta completa:', result);
+                
+                // Si recibimos una respuesta con datos, considerarlo exitoso
+                if (result && (result.id || result.status || result.nombre)) {
+                    // Mostrar página de éxito
+                    document.getElementById('formPage').classList.add('hidden');
+                    document.getElementById('successPage').classList.remove('hidden');
+                    document.getElementById('userEmail').textContent = data.correo_electronico;
+                    
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    throw new Error('La respuesta del servidor no contiene los datos esperados');
+                }
+                
+            } catch (error) {
+                console.error('Error completo:', error);
+                errorText.textContent = error.message || 'Hubo un problema al conectar con el servidor. Por favor intenta de nuevo.';
+                errorMessage.classList.remove('hidden');
+                
+                // Re-habilitar botón
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                loadingMessage.classList.add('hidden');
+                
+                // Scroll al error
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    </script>
+
+</body>
+</html>
