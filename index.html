@@ -401,25 +401,26 @@ const response = await fetch(webhookUrl, {
                 console.error('Error:', error);
                 errorText.textContent = error.message || 'Hubo un problema al conectar con el servidor. Por favor intenta de nuevo.';
                 errorMessage.classList.remove('hidden');
-                
-                // Re-habilitar botón
-                submitButton.disabled = false;
-                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                loadingMessage.classList.add('hidden');
-                
-                // Scroll al error
-                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        });
+               if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error en la respuesta del servidor');
+}
 
-        // Prevenir envío duplicado
-        document.getElementById('credentialsForm').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                this.requestSubmit();
-            }
-        });
-    </script>
+const result = await response.json();
+console.log('Respuesta completa del servidor:', result);
 
-</body>
-</html>
+// Verificar si hay error en la respuesta
+if (result.error === true) {
+    showError(result.message || 'Error al procesar la solicitud');
+    return;
+}
+
+// Si todo está bien
+hideError();
+showSuccessMessage();
+form.reset();
+
+} catch (error) {
+    console.error('Error completo:', error);
+    showError('Error al procesar la solicitud: ' + error.message);
+}
