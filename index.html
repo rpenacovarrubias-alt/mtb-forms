@@ -279,101 +279,118 @@
     </div>
   </div>
 
-  <script>
-    // ==========================================
-    // CONFIG NOCODB
-    // ==========================================
-    const NOCODB_BASE_URL = 'https://app.nocodb.com';
-    const NOCODB_TABLE_ID = 'mpdoejihjtpcb3v';
+ <script>
+  // ==========================================
+  // CONFIG NOCODB
+  // ==========================================
+  const NOCODB_BASE_URL = "https://app.nocodb.com";
+  const NOCODB_TABLE_ID = "mpdoejihjtpcb3v";
+  const NOCODB_TOKEN = "2hoJ8xCl69bYvz21JGFa1aKJ3svVVLDnFtvmPLJz";
 
-    // ⚠️ INSEGURO EN FRONTEND: mover a backend en producción
-    const NOCODB_TOKEN = '2hoJ8xCl69bYvz21JGFa1aKJ3svVVLDnFtvmPLJz';
+  const NOCODB_CREATE_RECORD_URL = `${NOCODB_BASE_URL}/api/v2/tables/${NOCODB_TABLE_ID}/records`;
 
-    const NOCODB_CREATE_RECORD_URL = `${NOCODB_BASE_URL}/api/v2/tables/${NOCODB_TABLE_ID}/records`;
+  // Toggle para mostrar/ocultar password
+  function togglePassword() {
+    const passwordInput = document.getElementById("xm_password");
+    const toggleIcon = document.getElementById("toggleIcon");
 
-    function togglePassword() {
-      const passwordInput = document.getElementById('xm_password');
-      const toggleIcon = document.getElementById('toggleIcon');
-
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        toggleIcon.textContent = 'visibility_off';
-      } else {
-        passwordInput.type = 'password';
-        toggleIcon.textContent = 'visibility';
-      }
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      toggleIcon.textContent = "visibility_off";
+    } else {
+      passwordInput.type = "password";
+      toggleIcon.textContent = "visibility";
     }
+  }
 
-    document.getElementById('credentialsForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
+  // Helpers
+  async function safeReadJson(response) {
+    const ct = response.headers.get("content-type") || "";
+    if (ct.includes("application/json")) return await response.json();
+    return { message: await response.text() };
+  }
 
-      const form = e.target;
-      const submitButton = form.querySelector('button[type="submit"]');
-      const loadingMessage = document.getElementById('loadingMessage');
-      const errorMessage = document.getElementById('errorMessage');
-      const errorText = document.getElementById('errorText');
+  document.getElementById("credentialsForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-      submitButton.disabled = true;
-      submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-      loadingMessage.classList.remove('hidden');
-      errorMessage.classList.add('hidden');
+    const form = e.target;
+    const submitButton = form.querySelector('button[type="submit"]');
+    const loadingMessage = document.getElementById("loadingMessage");
+    const errorMessage = document.getElementById("errorMessage");
+    const errorText = document.getElementById("errorText");
 
-      try {
-        // Campos 1 al 5
-        const data = {
-          nombre: document.getElementById('nombre').value.trim(),
-          email: document.getElementById('email').value.trim(),
-          xm_account: document.getElementById('xm_account').value.trim(),
-          xm_password: document.getElementById('xm_password').value,
-          xm_server: document.getElementById('xm_server').value
-        };
+    // UI states
+    submitButton.disabled = true;
+    submitButton.classList.add("opacity-50", "cursor-not-allowed");
+    loadingMessage.classList.remove("hidden");
+    errorMessage.classList.add("hidden");
 
-        // NocoDB espera "records": [ {...} ] para crear filas (bulk insert)
-        const payload = { records: [data] };
+    try {
+      const autorizacionChecked = document.getElementById("autorizacion").checked;
 
-        const response = await fetch(NOCODB_CREATE_RECORD_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'xc-token': NOCODB_TOKEN
-            // Alternativa (si prefieres): Authorization Bearer (desde v0.264.7) :contentReference[oaicite:2]{index=2}
-            // 'Authorization': `Bearer ${NOCODB_TOKEN}`,
-          },
-          body: JSON.stringify(payload),
-        });
-
-        // Si algo falla, intenta leer el error en JSON o texto
-        let result = null;
-        const contentType = response.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
-          result = await response.json();
-        } else {
-          const txt = await response.text();
-          result = { message: txt };
-        }
-
-        if (!response.ok) {
-          throw new Error(result?.message || `Error HTTP ${response.status}`);
-        }
-
-        // Éxito: muestra confirmación
-        document.getElementById('formPage').classList.add('hidden');
-        document.getElementById('successPage').classList.remove('hidden');
-        document.getElementById('userEmail').textContent = data.email;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      } catch (error) {
-        console.error('❌ Error:', error);
-        errorText.textContent = error?.message || 'Hubo un problema al conectar con el servidor. Por favor intenta de nuevo.';
-        errorMessage.classList.remove('hidden');
-
-        submitButton.disabled = false;
-        submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-        loadingMessage.classList.add('hidden');
-
-        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Aunque el HTML ya tiene "required", aquí lo forzamos por si algo raro
+      if (!autorizacionChecked) {
+        throw new Error("Debes autorizar la conexión para continuar.");
       }
-    });
-  </script>
+
+      // ✅ Payload PLANO como lo pide NocoDB (key-value por alias de columna)
+      const data = {
+        nombre: document.getElementById("nombre").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        xm_account: document.getElementById("xm_account").value.trim(),
+        xm_password: document.getElementById("xm_password").value,
+        xm_server: document.getElementById("xm_server").value,
+
+        // ✅ NUEVOS CAMPOS (deben existir como columnas en NocoDB)
+        autorizacion: true,
+        autorizacion_at: new Date().toISOString(),
+      };
+
+      console.log("📤 Enviando a NocoDB:", data);
+
+      const response = await fetch(NOCODB_CREATE_RECORD_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "xc-token": NOCODB_TOKEN,
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await safeReadJson(response);
+      console.log("📥 Respuesta NocoDB:", response.status, result);
+
+      if (!response.ok) {
+        // NocoDB suele responder { msg: "BadRequest [Error]: ..." }
+        throw new Error(result?.msg || result?.message || `Error HTTP ${response.status}`);
+      }
+
+      // ✅ Éxito
+      document.getElementById("formPage").classList.add("hidden");
+      document.getElementById("successPage").classList.remove("hidden");
+      document.getElementById("userEmail").textContent = data.email;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+    } catch (error) {
+      console.error("❌ Error:", error);
+
+      errorText.textContent =
+        error?.message ||
+        "Hubo un problema al conectar con el servidor. Por favor intenta de nuevo.";
+
+      errorMessage.classList.remove("hidden");
+
+      // Re-habilitar botón
+      submitButton.disabled = false;
+      submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+      loadingMessage.classList.add("hidden");
+
+      // Scroll al error
+      errorMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });
+</script>
+
 </body>
 </html>
